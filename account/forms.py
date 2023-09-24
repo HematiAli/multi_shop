@@ -12,14 +12,19 @@ class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
 
-    password1 = forms.CharField(label="پسورد", widget=forms.PasswordInput)
+    password1 = forms.CharField(label="پسورد", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(
-        label="تکرار پسورد", widget=forms.PasswordInput
+        label="تکرار پسورد", widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
 
     class Meta:
         model = User
-        fields = ["phone"]
+        fields = ["email", "fullname", "phone", "image"]
+        widgets = {
+           'phone': forms.TextInput(attrs={'class': 'form-control'}),
+           'fullname': forms.TextInput(attrs={'class': 'form-control'}),
+           'email': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
     def clean_password2(self):
         # Check that the two password entries match

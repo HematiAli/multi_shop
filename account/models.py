@@ -37,12 +37,13 @@ class User(AbstractBaseUser):
     email = models.EmailField(
         verbose_name="ادرس ایمیل",
         max_length=255,
-        unique=True,
+        unique=True
     )
     fullname = models.CharField(max_length=50, verbose_name='نام و نام خوانوادگی')
     phone = models.CharField(max_length=12, unique=True, verbose_name='شماره تلفن')
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False, verbose_name='ادمین')
+    image = models.ImageField(upload_to='user-image', null=True, blank=True, verbose_name='عکس پروفایل' )
 
     objects = UserManager()
 

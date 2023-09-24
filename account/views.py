@@ -2,11 +2,12 @@ from random import randint
 from uuid import uuid4
 
 import requests
-from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 
-from account.forms import LoginForm, OtpLoginForm, CheckOtpForm
+from account.forms import LoginForm, OtpLoginForm, CheckOtpForm, UserCreationForm
 import ghasedakpack
 
 from account.models import Otp, User
@@ -77,5 +78,28 @@ class CheckOtpView(View):
             else:
                 form.add_error('phone', 'invalid data')
         return render(request, 'account/check_otp.html', {'form': form})
+
+
+def UserLogout(request):
+    logout(request)
+    return redirect(reverse('home:home'))
+
+
+class RegisterUserView(View):
+    def get(self, request):
+        form = UserCreationForm()
+        return render(request, 'account/register.html', {'form': form})
+
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            data = form.cleaned_data
+            phone = data['phone']
+            password = data['password1']
+            user = authenticate(username=phone, password=password)
+            login(request, user)
+            messages.success(request, "Registration successful!")
+            return redirect(reverse('home:home'))
 
 
