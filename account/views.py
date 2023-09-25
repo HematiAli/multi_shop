@@ -72,7 +72,7 @@ class CheckOtpView(View):
             if Otp.objects.filter(code=data['code'], token=token).exists():
                 otp = Otp.objects.get(token=token)
                 user, is_created = User.objects.get_or_create(phone=otp.phone)
-                login(request, user)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 otp.delete()
                 return redirect(reverse('home:home'))
             else:
