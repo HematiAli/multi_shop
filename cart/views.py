@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
 from cart.cart_module import Cart
-from cart.models import Order, OrderItem
+from cart.models import Order, OrderItem, DiscountCode
 from product.models import Product
 
 
@@ -59,3 +59,33 @@ class OrderCreationView(View):
 
 }
 '''
+"""
+
+class ApplyDiscountView(LoginRequiredMixin, View):
+    def __pos__(self, request, pk):
+        code = request.GET.get('discount_code')
+        order = get_object_or_404(Order, id=pk)
+        discount_code = get_object_or_404(DiscountCode, name=code)
+        if discount_code.quantity == 0:
+            return redirect('cart:order_detail', order.id)
+        order.total_price -= order.total_price * discount_code.discount/100
+        order.save()
+        discount_code.quantity -= 1
+        discount_code.save()
+        return redirect('cart:order_detail', order.id)
+
+
+"""
+class ApplyDiscountCodeView(View):
+    def post(self, request, pk):
+        code = request.POST.get('discount_code')
+        order = get_object_or_404(Order, id=pk)
+        discount_code = get_object_or_404(DiscountCode, name=code)
+        if discount_code.quantity == 0 :
+            return redirect('cart:order_detail', order.id)
+        order.total_price -= order.total_price * discount_code.discount/100
+        order.save()
+        discount_code.quantity -= 1
+        discount_code.save()
+        return redirect('cart:order_detail', order.id)
+
