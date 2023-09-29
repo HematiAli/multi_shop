@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 
-from account.forms import LoginForm, OtpLoginForm, CheckOtpForm, UserCreationForm
+from account.forms import LoginForm, OtpLoginForm, CheckOtpForm, UserCreationForm, AddressCreationForm
 import ghasedakpack
 
 from account.models import Otp, User
@@ -103,3 +103,17 @@ class RegisterUserView(View):
             return redirect(reverse('home:home'))
 
 
+class AddressView(View):
+    def post(self, request):
+        form = AddressCreationForm(request.POST)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+            next_page = request.GET.get('next')
+            if next_page:
+                return redirect(next_page)
+        return render(request, 'account/add_address.html', {'form': form})
+    def get(self, request):
+        form = AddressCreationForm()
+        return render(request, 'account/add_address.html', {'form': form})

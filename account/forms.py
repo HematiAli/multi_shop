@@ -1,11 +1,9 @@
 from django import forms
-from .models import User
+from .models import User, Address
 
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 from django.core import validators
-
-
 
 
 class UserCreationForm(forms.ModelForm):
@@ -21,9 +19,9 @@ class UserCreationForm(forms.ModelForm):
         model = User
         fields = ["email", "fullname", "phone", "image"]
         widgets = {
-           'phone': forms.TextInput(attrs={'class': 'form-control'}),
-           'fullname': forms.TextInput(attrs={'class': 'form-control'}),
-           'email': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'fullname': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     def clean_password2(self):
@@ -72,8 +70,18 @@ class LoginForm(forms.Form):
 
 
 class OtpLoginForm(forms.Form):
-    phone = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}), validators=[validators.MaxLengthValidator(11)])
+    phone = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                            validators=[validators.MaxLengthValidator(11)])
 
 
 class CheckOtpForm(forms.Form):
-    code = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), validators=[validators.MaxLengthValidator(4)])
+    code = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                           validators=[validators.MaxLengthValidator(4)])
+
+
+class AddressCreationForm(forms.ModelForm):
+    user = forms.IntegerField(required=False)
+
+    class Meta:
+        model = Address
+        fields = '__all__'

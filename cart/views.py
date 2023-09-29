@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
 from cart.cart_module import Cart
+from cart.models import Order, OrderItem
 from product.models import Product
 
 
@@ -25,6 +26,26 @@ class CartDeleteView(View):
         cart = Cart(request)
         cart.delete(id)
         return redirect('cart:cart_detail')
+
+class OrderDetailView(View):
+    def get(self, request, pk):
+        order = get_object_or_404(Order, id=pk)
+        return render(request, 'cart/order_detail.html', {'order': order})
+
+
+
+
+
+class OrderCreationView(View):
+    def get(self, request):
+        cart = Cart(request)
+        order = Order.objects.create(user=request.user, total_price=cart.total())
+        for item in cart:
+            OrderItem.objects.create(order=order, product=item['product'], color=item['color'], size=item['size'],
+                                     price=item['price'], quantity=item['quantity'])
+        cart.remove_cart()
+        return redirect('cart:order_detail', order.id)
+
 
 
 '''

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'product.apps.ProductConfig',
     'cart.apps.CartConfig',
+    'widget_tweaks',
 
 ]
 
